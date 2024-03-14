@@ -4,8 +4,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.26",
+    "@types/express-validator": "^3.0.0",
+    "@types/node": "^20.11.27",
+    "@types/passport": "^1.0.16",
+    "@types/passport-local": "^1.0.38",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",
@@ -15,22 +19,32 @@
     "express": "^4.18.3",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.2",
+    "prisma": "^5.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.2",
     "typescript-eslint": "^7.2.0"
   },
   "scripts": {
     "start": "env TZ='UTC' node dist/index.js",
-    "dev": "env TZ='UTC' nodemon src/index.ts",
+    "dev": "env TZ='UTC' dotenvx run -- nodemon src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix"
+    "format": "eslint src/**/*.ts --fix",
+    "prepare": "ts-patch install && typia patch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express-validator": "^3.0.0",
-    "express-validator": "^7.0.1"
+    "@dotenvx/dotenvx": "^0.25.0",
+    "@prisma/client": "^5.11.0",
+    "bcrypt": "^5.1.1",
+    "express-validator": "^7.0.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

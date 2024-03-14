@@ -1,13 +1,20 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["es5", "es6", "dom"],
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": "src/",
-    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ],
     "resolveJsonModule": true,
     "outDir": "./dist",
     "removeComments": true,
@@ -17,8 +24,20 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "transform": "typia/lib/transform"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "include": ["./src/**/*.tsx", "./src/**/*.ts"],
-  "exclude": ["node_modules", "test/**/*.ts"]
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "test/**/*.ts"
+  ]
 }

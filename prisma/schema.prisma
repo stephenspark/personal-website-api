@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model bookmarks {
+  id                 BigInt   @id @unique @default(autoincrement())
+  uuid               String   @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id            BigInt?
+  created_by_user_id BigInt?
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  posts              posts?   @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model comments {
+  id                 BigInt   @id @unique @default(autoincrement())
+  uuid               String   @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id            BigInt?
+  created_by_user_id BigInt?
+  content            String?
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  posts              posts?   @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model likes {
+  id                 BigInt   @id @unique @default(autoincrement())
+  uuid               String   @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id            BigInt?
+  created_by_user_id BigInt?
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  posts              posts?   @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model post_to_tag {
+  post_id            BigInt
+  tag_id             BigInt
+  created_by_user_id BigInt?
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  posts              posts    @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tags               tags     @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([post_id, tag_id])
+  @@unique([post_id, tag_id])
+}
+
+model post_types {
+  id          BigInt   @id @unique @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String   @db.VarChar(255)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  posts       posts[]
+}
+
+model posts {
+  id                  BigInt        @id @unique @default(autoincrement())
+  uuid                String        @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_type_id        BigInt?
+  created_by_user_id  BigInt?
+  content             String?
+  image_url           String?       @db.VarChar(255)
+  image_thumbnail_url String?       @db.VarChar(255)
+  image_exif_metadata Json?
+  updated_at          DateTime      @default(now()) @db.Timestamptz(6)
+  created_at          DateTime      @default(now()) @db.Timestamptz(6)
+  bookmarks           bookmarks[]
+  comments            comments[]
+  likes               likes[]
+  post_to_tag         post_to_tag[]
+  users               users?        @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  post_types          post_types?   @relation(fields: [post_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model roles {
+  id                 BigInt         @id @unique @default(autoincrement())
+  uuid               String         @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String         @unique @db.VarChar(255)
+  description        String         @db.VarChar(255)
+  created_by_user_id BigInt?
+  updated_at         DateTime       @default(now()) @db.Timestamptz(6)
+  created_at         DateTime       @default(now()) @db.Timestamptz(6)
+  users              users?         @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_to_role       user_to_role[]
+}
+
+model tags {
+  id                 BigInt        @id @unique @default(autoincrement())
+  name               String        @unique @db.VarChar(255)
+  description        String        @db.VarChar(255)
+  created_by_user_id BigInt?
+  updated_at         DateTime      @default(now()) @db.Timestamptz(6)
+  created_at         DateTime      @default(now()) @db.Timestamptz(6)
+  post_to_tag        post_to_tag[]
+  users              users?        @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_to_role {
+  user_id                                      BigInt
+  role_id                                      BigInt
+  created_by_user_id                           BigInt?
+  updated_at                                   DateTime @default(now()) @db.Timestamptz(6)
+  created_at                                   DateTime @default(now()) @db.Timestamptz(6)
+  users_user_to_role_created_by_user_idTousers users?   @relation("user_to_role_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  roles                                        roles    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_user_to_role_user_idTousers            users    @relation("user_to_role_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+  @@unique([user_id, role_id])
+}
+
+model users {
+  id                                                  BigInt         @id @unique @default(autoincrement())
+  uuid                                                String         @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name                                          String         @db.VarChar(255)
+  last_name                                           String         @db.VarChar(255)
+  email                                               String         @unique @db.VarChar(255)
+  encrypted_password                                  String         @db.VarChar(255)
+  avatar_url                                          String?        @db.VarChar(255)
+  updated_at                                          DateTime       @default(now()) @db.Timestamptz(6)
+  created_at                                          DateTime       @default(now()) @db.Timestamptz(6)
+  bookmarks                                           bookmarks[]
+  comments                                            comments[]
+  likes                                               likes[]
+  post_to_tag                                         post_to_tag[]
+  posts                                               posts[]
+  roles                                               roles[]
+  tags                                                tags[]
+  user_to_role_user_to_role_created_by_user_idTousers user_to_role[] @relation("user_to_role_created_by_user_idTousers")
+  user_to_role_user_to_role_user_idTousers            user_to_role[] @relation("user_to_role_user_idTousers")
+}
