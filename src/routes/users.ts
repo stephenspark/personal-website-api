@@ -27,9 +27,8 @@ const validationHandler = (req: Request, res: Response) => {
 }
 
 const router = Router()
-
-router.post('/', userCreateValidation, validationHandler, createUser)
-router.put('/:uuid', userUpdateValidation, validationHandler, updateUser)
-router.get('/:uuid', userFindValidation, getUserByUUID)
+  .post('/', userCreateValidation, validationHandler, createUser)
+  .put('/:uuid', userUpdateValidation, validationHandler, updateUser)
+  .get('/:uuid', userFindValidation, getUserByUUID)
 
 export default router

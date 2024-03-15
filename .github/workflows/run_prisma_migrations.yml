@@ -23,8 +23,8 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo DATABASE_URL=${{ var.DATABASE_URL }} >> .env
-          echo DIRECT_URL=${{ var.DIRECT_URL }} >> .env
+          echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env
+          echo DIRECT_URL=${{ vars.DIRECT_URL }} >> .env
 
       - name: Install dependencies
         run: npm install

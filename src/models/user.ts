@@ -1,6 +1,6 @@
-import prisma from 'libs/prisma'
+import prisma from '../libs/prisma'
 
-import { saltAndHashString } from 'libs/bcrypt'
+import { saltAndHashString } from '../libs/bcrypt'
 export interface IUser {
   uuid: string
   first_name: string

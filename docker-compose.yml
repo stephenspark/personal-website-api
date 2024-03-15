@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  app:
+    image: personal-website-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_STORE_SECRET=${REDIS_STORE_SECRET}
+      - API_KEY=${API_KEY}

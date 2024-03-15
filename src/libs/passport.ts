@@ -1,8 +1,8 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 
-import User from 'models/User'
-import { validatePasswordMatch } from 'libs/bcrypt'
+import User from '../models/User'
+import { validatePasswordMatch } from '../libs/bcrypt'
 
 passport.serializeUser((user, done) => {
   done(null, user.uuid)
@@ -42,3 +42,5 @@ passport.use(
     }
   )
 )
+
+export default passport
