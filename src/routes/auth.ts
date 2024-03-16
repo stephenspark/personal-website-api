@@ -12,13 +12,13 @@ const validationHandler = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    res.status(400).json({ errors: errors.array() })
+    return res.status(400).json({ errors: errors.array() })
   }
-  next()
+  return next()
 }
 
 const router = Router()
   .post('/login/password', loginValidation, validationHandler, localLogin)
-  .post('/logout', logout)
+  .delete('/logout', logout)
 
 export default router

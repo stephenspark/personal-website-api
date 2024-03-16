@@ -3,15 +3,17 @@ version: "3.9"
 services:
   redis:
     image: redis:7.2.4-alpine
+    container_name: redis
     networks:
-      - default
+      - personalwebsite
     ports:
       - 6379:6379
 
-  app:
+  personal-website-api:
     image: personal-website-api:dev
+    container_name: personal-website-api
     networks:
-      - default
+      - personalwebsite
     build:
       context: ./
       dockerfile: Dockerfile.dev
@@ -19,15 +21,16 @@ services:
       - ./:/app
       - /app/node_modules
     ports:
-      - 3001:3000
+      - 3001:3001
     depends_on:
       - redis
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - DIRECT_URL=${DIRECT_URL}
       - REDIS_URL=${REDIS_URL}
-      - REDIS_STORE_SECRET=${REDIS_STORE_SECRET}
+      - REDIS_SESSION_SECRET=${REDIS_SESSION_SECRET}
       - API_KEY=${API_KEY}
 
 networks:
-  default:
+  personalwebsite:
+    name: personalwebsite

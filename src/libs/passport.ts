@@ -10,15 +10,9 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (uuid: string, done) => {
   try {
-    const user = await User.findUserByUUID(uuid)
-
-    if (user === null) {
-      return done(null, user)
-    } else {
-      return done(null, user)
-    }
+    done(null, await User.findUserByUUID(uuid))
   } catch (err) {
-    return err
+    done(err)
   }
 })
 
