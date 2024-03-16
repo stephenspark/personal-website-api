@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { IUser } from 'models/User'
+import { IUser } from '../models/User'
 import passport from 'passport'
 
 export function localLogin(req: Request, res: Response, next: NextFunction) {

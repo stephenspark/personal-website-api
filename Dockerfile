@@ -29,15 +29,6 @@ COPY --from=deps /app/node_modules /app/node_modules
 COPY . .
 RUN npm run build
 
-# Generate prisma client from schema
-FROM base AS prisma-client
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules /app/node_modules
-COPY ./prisma /app/prisma
-RUN npx prisma generate
-
 # Build the production image with minimal footprint
 FROM base
 
@@ -45,7 +36,9 @@ WORKDIR /app
 
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
-COPY --from=prisma-client /app/node_modules/.prisma /app/node_modules/.prisma
 COPY . .
+
+# Generate prisma client just before serving
+RUN npx prisma generate
 
 CMD ["npm", "run", "serve"]
