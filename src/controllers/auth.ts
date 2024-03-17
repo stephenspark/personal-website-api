@@ -23,9 +23,7 @@ export function localLogin(req: Request, res: Response, next: NextFunction) {
 }
 
 export function logout(req: Request, res: Response) {
-  console.log(req.headers)
-  console.log(req.session)
-  return req.logout((err) => {
+  return req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ message: 'Something went wrong' })
     }

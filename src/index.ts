@@ -8,7 +8,7 @@ import usersRoutes from './routes/users'
 
 // libs
 import passport from './libs/passport'
-import redisStore from './libs/redisStore'
+import mongoStore from './libs/mongoStore'
 
 // middlewares
 import { authenticationCheck } from './middlewares/auth'
@@ -22,16 +22,17 @@ const cookieSecure = process.env.NODE_ENV === 'development' ? 'auto' : true
 app.use(express.json())
 app.use(
   session({
-    store: redisStore,
+    store: mongoStore,
     resave: false,
     saveUninitialized: false,
-    secret: `${process.env.REDIS_SESSION_SECRET}`,
+    secret: `${process.env.SESSION_SECRET}`,
     proxy: true,
     cookie: {
       sameSite: cookieSameSite,
       secure: cookieSecure,
       maxAge: 1000 * 60 * 60 * 24 * 14,
     },
+    unset: 'destroy',
   })
 )
 

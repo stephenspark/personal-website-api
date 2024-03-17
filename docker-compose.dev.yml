@@ -1,13 +1,18 @@
 version: "3.9"
 
 services:
-  redis:
-    image: redis:7.2.4-alpine
-    container_name: redis
+  mongo:
+    image: mongo:7.0.6
+    container_name: mongo
     networks:
       - personalwebsite
     ports:
-      - 6379:6379
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo_data:/data/db
 
   personal-website-api:
     image: personal-website-api:dev
@@ -23,14 +28,17 @@ services:
     ports:
       - 3001:3001
     depends_on:
-      - redis
+      - mongo
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - DIRECT_URL=${DIRECT_URL}
-      - REDIS_URL=${REDIS_URL}
-      - REDIS_SESSION_SECRET=${REDIS_SESSION_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - MONGO_DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
       - API_KEY=${API_KEY}
 
 networks:
   personalwebsite:
     name: personalwebsite
+
+volumes:
+  mongo_data:
