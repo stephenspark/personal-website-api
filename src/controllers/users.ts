@@ -29,9 +29,35 @@ export async function updateUser(req: Request, res: Response) {
   if (!user) {
     res.status(404).send('User not found')
   } else {
-    user = await User.updateUser(req.params.uuid, ...req.body)
-
-    res.status(200).json(user)
+    switch (req.body.updateType) {
+      case 'updateAvatar':
+        // Have the file upload, compression, etc. happen in a Lambda async, but wait on the results here to update DB with URL
+        res.status(200).json(user)
+        break
+      case 'updateInformation':
+        // Break this out so that the controller can accept an object with named keys so I don't have to pad with undefineds...
+        user = await User.updateUser(
+          req.params.uuid,
+          req.body.firstName,
+          req.body.lastName,
+          req.body.email
+        )
+        res.status(200).json(user)
+        break
+      case 'updatePassword':
+        user = await User.updateUser(
+          req.params.uuid,
+          undefined,
+          undefined,
+          undefined,
+          req.body.newPassword
+        )
+        res.status(200).json(user)
+        break
+      default:
+        console.log(`Unknown update type ${req.body.updateType}`)
+        res.status(400)
+    }
   }
 }
 
