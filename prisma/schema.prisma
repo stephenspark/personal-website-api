@@ -70,6 +70,8 @@ model posts {
   uuid                String        @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   post_type_id        BigInt?
   created_by_user_id  BigInt?
+  title               String?       @db.VarChar(255)
+  subtitle            String?       @db.VarChar(255)
   content             String?
   image_url           String?       @db.VarChar(255)
   image_thumbnail_url String?       @db.VarChar(255)

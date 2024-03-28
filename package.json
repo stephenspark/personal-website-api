@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "env TZ='UTC' node dist/index.js",
-    "dev": "env TZ='UTC' dotenvx run -- nodemon -L src/index.ts",
+    "dev": "env TZ='UTC' DEBUG='prisma' dotenvx run -- nodemon -L src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "lint": "eslint src/**/*.ts",
