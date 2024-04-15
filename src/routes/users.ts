@@ -13,12 +13,16 @@ const userCreateValidation = [
     .notEmpty()
     .withMessage('Body param [firstName] is required'),
   body('lastName').notEmpty().withMessage('Body param [lastName] is required'),
-  body('email').notEmpty().withMessage('Body param [email] is required'),
+  body('email')
+    .isEmail()
+    .withMessage('Body param [email] is required and must be a valid email'),
   body('password').notEmpty().withMessage('Body param [password] is required'),
 ]
 
 const userUpdateValidation = [
-  param('uuid').notEmpty().withMessage('Query param [uuid] is required'),
+  param('uuid')
+    .isUUID()
+    .withMessage('Query param [uuid] is required and must be a valid UUID'),
   body('updateType')
     .notEmpty()
     .withMessage('Body param [updateType] is required'),
@@ -45,18 +49,19 @@ const userUpdateValidation = [
         .withMessage('Body param [newPassword] is required'),
       body('confirmNewPassword')
         .notEmpty()
-        .withMessage('Body param [confirmNewPassword] is required'),
-      body('newPassword')
-        .equals('confirmNewPassword')
+        .withMessage('Body param [confirmNewPassword] is required')
+        .custom((value, { req }) => value === req.body.newPassword)
         .withMessage(
-          'Values corresponding to body params [newPassword, confirmNewPassword] do not match'
+          'Body params [newPassword, confirmNewPassword] do not match'
         ),
     ],
   ]),
 ]
 
 const userFindValidation = [
-  query('uuid').notEmpty().withMessage('Query param [uuid] is required'),
+  query('uuid')
+    .isUUID()
+    .withMessage('Query param [uuid] is required and must be a valid UUID'),
 ]
 
 const validationHandler = (req: Request, res: Response, next: NextFunction) => {

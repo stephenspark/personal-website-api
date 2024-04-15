@@ -1,12 +1,13 @@
 import { Request, Response } from 'express'
 
 import User from '../models/User'
+import { validatePasswordMatch } from '../libs/bcrypt'
 
 export async function createUser(req: Request, res: Response) {
   if (await User.findUserByEmail(req.body.email)) {
     res
       .status(409)
-      .json({ errors: 'A user with this email address already exists!' })
+      .json({ message: 'A user with this email address already exists!' })
   }
 
   const user = await User.createUser(
@@ -19,7 +20,7 @@ export async function createUser(req: Request, res: Response) {
   if (!user) {
     res.status(201).json(user)
   } else {
-    res.status(500).json({ errors: 'Something went wrong!' })
+    res.status(500).json({ message: 'Something went wrong!' })
   }
 }
 
@@ -45,6 +46,19 @@ export async function updateUser(req: Request, res: Response) {
         res.status(200).json(user)
         break
       case 'updatePassword':
+        // Verify that current password supplied matches existing user current password
+        if (
+          !(await validatePasswordMatch(
+            req.body.currentPassword,
+            user.encrypted_password
+          ))
+        ) {
+          res.status(400).json({
+            message:
+              'Current password supplied does not match password on file',
+          })
+          break
+        }
         user = await User.updateUser(
           req.params.uuid,
           undefined,
@@ -55,8 +69,9 @@ export async function updateUser(req: Request, res: Response) {
         res.status(200).json(user)
         break
       default:
-        console.log(`Unknown update type ${req.body.updateType}`)
-        res.status(400)
+        res
+          .status(400)
+          .json({ message: `Unknown update type ${req.body.updateType}` })
     }
   }
 }
@@ -65,7 +80,7 @@ export async function getUserByUUID(req: Request, res: Response) {
   const user = await User.findUserByUUID(req.params.uuid)
 
   if (!user) {
-    res.status(404).send('User not found')
+    res.status(404).json({ message: 'User not found' })
   } else {
     res.status(200).json(user)
   }
@@ -73,7 +88,7 @@ export async function getUserByUUID(req: Request, res: Response) {
 
 export async function getUserBySession(req: Request, res: Response) {
   if (!req.user) {
-    res.status(404).send('User not found')
+    res.status(404).json({ message: 'User not found' })
   } else {
     res.status(200).json(req.user)
   }
