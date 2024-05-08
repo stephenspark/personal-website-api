@@ -5,7 +5,7 @@ services:
     image: mongo:7.0.6
     container_name: mongo
     networks:
-      - personalwebsite
+      - photographyportfolio
     ports:
       - 27017:27017
     environment:
@@ -14,11 +14,11 @@ services:
     volumes:
       - mongo_data:/data/db
 
-  personal-website-api:
-    image: personal-website-api:dev
-    container_name: personal-website-api
+  photography-portfolio-api:
+    image: photography-portfolio-api:dev
+    container_name: photography-portfolio-api
     networks:
-      - personalwebsite
+      - photographyportfolio
     build:
       context: ./
       dockerfile: Dockerfile.dev
@@ -37,8 +37,8 @@ services:
       - API_KEY=${API_KEY}
 
 networks:
-  personalwebsite:
-    name: personalwebsite
+  photographyportfolio:
+    name: photographyportfolio
 
 volumes:
   mongo_data:

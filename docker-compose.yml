@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  personal-website-api:
-    image: personal-website-api
-    container_name: personal-website-api
+  photography-portfolio-api:
+    image: photography-portfolio-api
+    container_name: photography-portfolio-api
     build:
       context: ./
       dockerfile: Dockerfile
